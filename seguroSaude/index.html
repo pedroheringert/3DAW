@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguro Saúde</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+</head>
+<body>
+    <h1>Cálculo de Seguro Saúde</h1>
+
+    <div>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome">
+    </div>
+
+    <div>
+        <label for="faixa-etaria">Faixa Etária:</label>
+        <select id="faixa-etaria">
+            <option value="1">20 anos ou menos</option>
+            <option value="2">21 a 30 anos</option>
+            <option value="3">31 a 40 anos</option>
+            <option value="4">41 a 50 anos</option>
+            <option value="5">51 a 65 anos</option>
+            <option value="6">66 anos ou mais</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="doente">
+            <input type="checkbox" id="doente">
+            Possui doença prévia?
+        </label>
+    </div>
+    
+    <button type="button" id="envia">Calcular</button>
+
+    <div id="result"></div>
+    <div id="error"></div>
+
+</body>
+    <script>
+    
+    $(document).ready(function() {
+        $("#envia").click(function() {
+           
+            var nome = $("#nome").val();
+            var faixa_etaria = $("#faixa-etaria").val();
+           
+            var doente = $("#doente").is(':checked'); 
+
+            
+            $("#result").text("");
+            $("#error").text("");
+
+            $.ajax({
+                type: "POST",
+                url: "calcula.php",
+                data: {
+                    faixa_etaria: faixa_etaria,
+                    doente: doente 
+                },
+                dataType: "json",
+                
+                success: function(response) {
+                    
+                    var nomeExibicao = nome ? ", " + nome : ""; 
+                    $("#result").text("Olá" + nomeExibicao + "! O valor do seu seguro é: R$ " + response.valor_final);
+                },
+                
+                error: function() {
+                    $("#error").text("Ocorreu um erro ao calcular. Tente novamente.");
+                }
+            });
+        });
+    });
+    </script>
+</html>

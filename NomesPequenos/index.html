@@ -1,0 +1,47 @@
+    <!DOCTYPE html>
+
+    <html>
+
+    <body>
+
+    <button onclick="aviso()">Clique-me!</button>
+    <section id="secao"></section>
+    <p id="resultado"></p>
+
+    <p id="aviso" onmouseover="trocaCor()" onmouseout="voltaCor()">Eu sou um texto engraçado!</p>
+
+    </body>
+
+    <script>
+
+        function aviso()
+    {
+        var novo = document.createElement("p");
+        var texto = document.createTextNode("Clicado no botão!");
+        novo.appendChild(texto);
+        novo.setAttribute("id", "novo_paragrafo");
+        novo.setAttribute("class", "estiloParagrafo");
+        var elementoPai = document.querySelector("#secao");
+        elementoPai.appendChild(novo);
+    }
+
+
+
+
+        function trocaCor()
+        {
+            var p = document.querySelector('#aviso');
+
+            p.style.color='Red';
+        }
+
+        function voltaCor()
+        {
+            var p = document.querySelector('#aviso');
+
+            p.style.color='Black';
+        }
+
+    </script>
+
+    </html>

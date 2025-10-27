@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotomania</title>
+</head>
+<body>
+    <label for="quantidade">Quantidade de numeros</label>
+    <input type="number" id="quantidade" >
+    <label for="limite">Limite de numeros</label>
+    <input type="number" id="limite">
+    <button type="button" id="manda"></button>
+
+
+<br><br>
+
+<div id="resultado"></div>
+</body>
+
+    <script>
+    $("#manda").click(function()
+    {
+        var quantidade = $("#quantidade").val();
+        var limite = $("#limite").val();
+
+        $.ajax({
+            type: "GET",
+            url: "lotomania.php",
+            data:{
+                quantidade,
+                limite
+            },
+            success: function(response) {
+                    if(response.sucesso) {
+                        var numerosFormatados = response.numeros.join(', ');
+                        $("#resultado").text("Números sorteados: " + numerosFormatados);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var mensagemErro = xhr.responseJSON ? xhr.responseJSON.erro : "Ocorreu um erro na requisição."; 
+                    $("resultado").text("Erro: " + mensagemErro);
+                }
+        });
+
+
+    });
+
+    </script>
+</html>

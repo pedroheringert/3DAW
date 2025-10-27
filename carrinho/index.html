@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Carrinho de Compras</title>
+  </head>
+  <body>
+
+      <table border="1" id="produtos">
+      </table>
+
+      <table border="1" id="carrinho">
+
+      <p id="resumo"></p>
+      </table>
+      
+
+      <script type="text/javascript">
+
+      function Produto( id, descricao, preco)
+      {
+        this.id = id;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.getDescricao = function()
+        {
+          return this.descricao;
+        };
+        this.getPreco = function()
+        {
+          return this.preco;
+        };
+        this.getId = function()
+        {
+          return this.id;
+        };
+      }
+
+      function Item( produto, quantidade)
+      {
+        this.produto = produto;
+        this.quantidade = prompt("Quantas unidades de "+ this.produto.descricao +" voce deseja adicionar?");
+        this.calcularTotalItem = function()
+        {
+            return this.produto.getPreco() * this.quantidade;
+        };
+
+      }
+
+      function Carrinho()
+      {
+        this.itens = [ ];
+        this.adicionar = function( item)
+        {
+          var itemJaExiste = false;
+
+          for (var i = 0; i < this.itens.length; i++) 
+          {
+            var itemExistente = this.itens[i];
+
+            if (itemExistente.produto.getId() === item.produto.getId()) 
+              {
+
+                itemExistente.quantidade = parseInt(itemExistente.quantidade) + parseInt(item.quantidade);
+
+                itemJaExiste=true;
+
+                break;
+
+              }
+          }
+          if (!itemJaExiste) 
+          {
+            this.itens.push(item);
+          }
+          
+          this.desenharCarrinho();
+        };
+
+
+       this.desenharCarrinho=function()
+        {
+          var tabelaCarrinho = document.querySelector("#carrinho");
+
+          tabelaCarrinho.innerHTML='';
+
+           for (var i = 0; i < this.itens.length; i++) 
+          {
+            
+            var item = this.itens[i];
+
+            var linha = document.createElement("tr");
+
+            var celula_desc = document.createElement("td");
+            var text_desc = document.createTextNode(item.produto.getDescricao());
+            celula_desc.appendChild(text_desc);
+            linha.appendChild(celula_desc);
+
+            var celula_qnt = document.createElement("td");
+            var text_qnt = document.createTextNode(item.quantidade);
+            celula_qnt.appendChild(text_qnt);
+            linha.appendChild(celula_qnt);
+
+            tabelaCarrinho.appendChild(linha);
+
+            var resumo = document.querySelector("#resumo");
+            resumo.textContent = "valor total = " + this.getValorTotal().toFixed(2);
+          }
+
+        }
+
+
+
+
+        this.getValorTotal = function()
+        {
+          var total = 0.0;
+          for( var i=0; i < this.itens.length; i++)
+          {
+            var item = this.itens[i];
+            total += item.calcularTotalItem();
+          }
+          return total;
+        };
+      }
+
+      function criarProdutos()
+      {
+        var produtos = [ ];
+        produtos.push( new Produto( 1, "Bola", 50.12));
+        produtos.push( new Produto( 2, "Chuteira", 200.0));
+        produtos.push( new Produto( 3, "Meia", 16.60));
+        produtos.push( new Produto( 4, "Caneleira", 50.00) );
+        return produtos;
+      }
+
+      var produtos = criarProdutos();
+      var carrinho = new Carrinho();
+
+      function adicionarAoCesto( idProduto)
+      {
+        var regexpId = /produto(\d)+/;
+        var tokens = regexpId.exec( idProduto);
+        var id = parseInt( tokens[1]);
+
+        for( var i=0; i < produtos.length; i++)
+        {
+          var produto = produtos[i];
+          if( produto.getId() === id)
+          {
+            carrinho.adicionar( new Item( produto, 1) );
+            return;
+          }
+
+        }
+        alert( "produto nao identificado");
+      }
+
+      function desenharProdutos( produtos)
+      {
+        var tabela = document.querySelector("#produtos");
+        for( var i=0; i < produtos.length; i++)
+        {
+          var produto = produtos[ i];
+          var linha = document.createElement("tr");
+
+          var celulaDescricao = document.createElement("td");
+          var textoDescricao = document.createTextNode( produto.descricao );
+          celulaDescricao.appendChild( textoDescricao);
+          linha.appendChild( celulaDescricao);
+
+          var celulaPreco = document.createElement("td");
+          var textoPreco = document.createTextNode( produto.preco.toFixed(2) );
+          celulaPreco.appendChild( textoPreco);
+          linha.appendChild( celulaPreco);
+
+          var celulaAdicionar = document.createElement("td");
+          var botao = document.createElement("button");
+          var textoBotao = document.createTextNode( "Adicionar" );
+          botao.setAttribute("id", "produto" + produto.getId() );
+          botao.appendChild( textoBotao);
+          botao.onclick = function() {
+            adicionarAoCesto( this.id );
+          };
+          celulaAdicionar.appendChild( botao);
+          linha.appendChild( celulaAdicionar);
+
+          tabela.appendChild( linha );
+        }
+      }
+
+      desenharProdutos ( produtos);
+      </script>
+  </body>
+</html>
